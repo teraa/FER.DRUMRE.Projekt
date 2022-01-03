@@ -24,10 +24,9 @@ public static class Extensions
         const string suffix = "Options";
 
         string name = typeof(TOptions).Name;
-        int idx = name.LastIndexOf(suffix);
 
-        if (name.Length - idx == suffix.Length)
-            name = name[..idx];
+        if (name.EndsWith(suffix))
+            name = name[..^suffix.Length];
 
         return configuration.GetRequiredSection(name).Get<TOptions>();
     }
