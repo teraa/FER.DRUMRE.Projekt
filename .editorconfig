@@ -1,0 +1,13 @@
+root = true
+
+[*]
+insert_final_newline = true
+
+[*.cs]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+
+[{*.csproj,*.yml,*.cs}]
+trim_trailing_whitespace = true
