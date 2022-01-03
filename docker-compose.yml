@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  server:
+    container_name: spoclo-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - ASPNETCORE_URLS=http://*:5000
+      - ASPNETCORE_ENVIRONMENT=Development
+      - Logging__Console__FormatterName
+
+  mongo:
+    container_name: spoclo-mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${mongo_user}
+      - MONGO_INITDB_ROOT_PASSWORD=${mongo_pass}
+    volumes:
+      - spoclo-data:/data/db
+
+  mongoexpress:
+    container_name: spoclo-mongo-express
+    image: mongo-express
+    ports:
+    - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://${mongo_user}:${mongo_pass}@mongo:27017
+    depends_on:
+      - mongo
+    command: >
+      bash -c "
+      while ! nc -z mongo 27017; do
+        echo 'mongo not up, retrying...'
+        sleep 3
+      done;
+      /docker-entrypoint.sh
+      "
+
+volumes:
+  spoclo-data:
