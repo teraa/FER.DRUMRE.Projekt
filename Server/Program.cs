@@ -5,8 +5,12 @@ using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// GQL
+var mongoOptions = builder.Configuration.GetOptions<MongoOptions>();
+
 builder.Services
+    .AddMongo(mongoOptions.Uri, mongoOptions.DbName)
+    .AddMongoCollection<Book>()
+    // GQL
     .AddGraphQLServer()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
@@ -17,13 +21,7 @@ builder.Services
     .AddMongoDbPagingProviders()
     .BindRuntimeType<ObjectId, IdType>()
     .AddTypeConverter<string, ObjectId>(x => ObjectId.Parse(x))
-    .AddTypeConverter<ObjectId, string>(x => x.ToString())
-    ;
-
-// Services
-builder.Services
-    .AddMongo(builder.Configuration["MongoUri"], builder.Configuration["MongoDb"])
-    .AddMongoCollection<Book>();
+    .AddTypeConverter<ObjectId, string>(x => x.ToString());
 
 var app = builder.Build();
 app.MapGet("/", () => "Hello World!");

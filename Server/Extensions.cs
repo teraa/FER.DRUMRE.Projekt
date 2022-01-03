@@ -18,4 +18,17 @@ public static class Extensions
             return sp.GetRequiredService<IMongoDatabase>().GetCollection<TCollection>(typeof(TCollection).Name);
         });
     }
+
+    public static TOptions GetOptions<TOptions>(this IConfiguration configuration)
+    {
+        const string suffix = "Options";
+
+        string name = typeof(TOptions).Name;
+        int idx = name.LastIndexOf(suffix);
+
+        if (name.Length - idx == suffix.Length)
+            name = name[..idx];
+
+        return configuration.GetRequiredSection(name).Get<TOptions>();
+    }
 }
