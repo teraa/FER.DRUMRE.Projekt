@@ -1,6 +1,5 @@
 using HotChocolate.Data;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,14 +26,6 @@ var app = builder.Build();
 app.MapGet("/", () => "Hello World!");
 app.MapGraphQL();
 app.Run();
-
-public class Book
-{
-    [BsonId]
-    public ObjectId Id { get; set; }
-    public string Title { get; set; } = default!;
-    public string Author { get; set; } = default!;
-}
 
 public class Query
 {
@@ -84,5 +75,3 @@ public class Mutation
         return doc;
     }
 }
-
-public record BookInput(string Title, string Author);
